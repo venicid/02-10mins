@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/semantic.css" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" href="../static/css/list_custom.css" media="screen" title="no title" charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Oswald|Raleway" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="ui inverted top fixed menu borderless red menu">
+        <div class="header item">
+            <div class="ui image">
+                <img src="../static/images/tenlogo.png" alt="">
+            </div>
+        </div>
+
+        <div class="right menu">
+            <div class="item">
+                <h5 class="ui inverted header">
+                        <div class="ui mini circular image">
+                            <img src="../static/images/hou30.jpg" alt="">
+                        </div>
+
+                        <span>admin</span>
+
+                    </h5>
+            </div>
+            <div class="item">
+
+                <a href="#logout/" class="ui inverted circular button">Logout</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="ui inverted segment container nav">
+        <div class="ui  three borderless  item  menu">
+            <a class="item">
+                        All
+                    </a>
+            <a class="item">
+                        New
+                    </a>
+
+
+            {% if 'editors' in  request.path  %}
+                <a class="active item" href="{% url 'list' %}editors">
+                            Editor's
+                </a>
+            {% else %}
+                <a class="item" href="{% url 'list' %}editors">
+                            Editor's
+                </a>
+            {% endif %}
+
+
+        </div>
+    </div>
+
+
+
+    <div class="ui basic segment container content">
+
+        <div class="ui three column grid">
+
+            {% for  video in  video_list %}
+                <div class="column">
+                    <a class="ui fluid card" href="#detail/215">
+                        <div class="image">
+
+                          {% if video.cover %}
+                            <img src=" /upload/{{ video.cover }}" alt="" style="height:200px;object-fit: cover;">
+                          {% else %}
+                              <img src="{{ video.url_image }}" alt="" style="height:200px;object-fit: cover;">
+                          {% endif %}
+
+
+                        </div>
+                    </a>
+
+
+                    <div class="title header" href="/detail/215">{{ video.title }}</div>
+
+                    <i class="icon grey unhide"></i>
+                    <span style="color:#bbbbbb">10K</span>
+                    <span class="" style="color:rgb(226, 226, 226)">|</span>
+                    <i class="icon grey checkmark"></i>
+                    <span style="color:#bbbbbb"> 10 people got it</span>
+
+                </div>
+            {% endfor %}
+
+
+        </div>
+    </div>
+
+
+
+    <div class="ui center aligned very padded vertical segment container">
+        <div class="ui pagination menu">
+
+            {% if video_list.has_previous %}
+                <a href="?page={{ video_list.previous_page_number }}" class="item">
+                    <i class="icon red left arrow"></i>
+                </a>
+            {% else %}
+                <a href="?page={{ video_list.start_index }}" class="disabled item">
+                    <i class="icon left arrow"></i>
+                </a>
+            {% endif %}
+
+
+            {% if video_list.has_next  %}
+                <a href="?page={{ video_list.next_page_number }" class="item">
+                    <i class="icon red right arrow"></i>
+                </a>
+            {% else %}
+                <a href="?page={{ video_list.end_index }" class="disabled item">
+                    <i class="icon  right arrow"></i>
+                </a>
+            {% endif %}
+
+
+
+        </div>
+    </div>
+</body>
+
+</html>
