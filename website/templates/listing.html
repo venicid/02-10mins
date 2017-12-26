@@ -20,23 +20,50 @@
         </div>
 
         <div class="right menu">
-            <div class="item">
-                <h5 class="ui inverted header">
-                        <div class="ui mini circular image">
-                            <img src="../static/images/hou30.jpg" alt="">
-                        </div>
+          {% if request.user.is_authenticated %}
+              <div class="item">
+                  <h5 class="ui inverted header">
+                          <div class="ui mini circular image">
 
-                        <span>admin</span>
+                            {% if request.user.profile.profile_image %}
 
-                    </h5>
-            </div>
-            <div class="item">
+                              <img src="/upload/{{ request.user.profile.profile_image }}" alt="" />
+                            {% else %}
+                              <img src="../static/images/hou30.jpg" alt="">
+                            {% endif %}
 
-                <a href="#logout/" class="ui inverted circular button">Logout</a>
+                          </div>
+                          <span>{{ request.user.username }}</span>
+                  </h5>
+              </div>
+              
+              <div class="item">
+                  <a href="{% url 'logout' %}" class="ui inverted circular button">Logout</a>
+              </div>
 
-            </div>
+          {% else %}
+
+              <div class="item">
+                  <h5 class="ui inverted header">
+                          <div class="ui mini circular image">
+                              <img src="../static/images/hou30.jpg" alt="">
+                          </div>
+                          <span>{{ request.user.username }}</span>
+                  </h5>
+              </div>
+              <div class="item">
+                  <a href="#logout/" class="ui inverted circular button">Signup/Login</a>
+              </div>
+
+          {% endif %}
+
         </div>
+
+
     </div>
+
+
+
     <div class="ui inverted segment container nav">
         <div class="ui  three borderless  item  menu">
             <a class="item">
@@ -115,7 +142,7 @@
 
 
             {% if video_list.has_next  %}
-                <a href="?page={{ video_list.next_page_number }" class="item">
+                <a href="?page={{ video_list.next_page_number }}" class="item">
                     <i class="icon red right arrow"></i>
                 </a>
             {% else %}
