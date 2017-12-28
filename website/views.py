@@ -1,9 +1,10 @@
 from django.shortcuts import render, Http404,redirect,HttpResponse
-from  website.models import  Video
+from  website.models import  Video,Ticket
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login
 from website.form import LoginForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 
 def index_register(request):
@@ -84,3 +85,39 @@ def listing(request, cate=None):  #cate可选默认参数
     context['video_list'] = video_list
     listing_page = render(request, 'listing.html', context)
     return listing_page
+
+
+def detail(request, id):
+    """投票的id,视频的ID """
+    context = {}
+    vid_info = Video.objects.get(id=id)  #投票的是哪个视频
+    voter_id = request.user.profile.id  # 投票的是哪个用户
+
+    #视频id 里面有多少like  count（like）
+    like_counts = Ticket.objects.filter(choice='like', video_id=id).count()
+
+    try:
+        user_ticker_for_this_video = Ticket.objects.get(voter_id=voter_id, video_id=id)
+        # 这个视频，这个用户，投票的内容是什么
+        context['user_ticket'] = user_ticker_for_this_video
+        print(context['user_ticket'].choice)
+    except:
+        pass
+
+    context['vid_info'] = vid_info
+    context['like_counts'] = like_counts
+    return render(request, 'detail.html', context)
+
+
+def detail_vote(request, id):
+    voter_id = request.user.profile.id
+    try:   #如果已经投票了，显示之前的
+        user_ticket_for_this_video = Ticket.objects.get(voter_id=voter_id, video_id=id)
+        user_ticket_for_this_video.choice = request.POST['vote']
+        user_ticket_for_this_video.save()
+    except ObjectDoesNotExist:  # 如果没有投票，就投票
+        new_ticket = Ticket(voter_id=voter_id, video_id=id, choice=request.POST['vote'])
+        print(new_ticket)
+        new_ticket.save()
+
+    return redirect(to='detail', id=id)

@@ -2,10 +2,6 @@ from django.db import models
 from faker import Factory
 from django.contrib.auth.models import User
 
-class UserProfile(models.Model):
-    """用户资料类"""
-    belong_to = models.OneToOneField(to=User, related_name='profile')
-    profile_image = models.FileField(upload_to='profile_image')
 
 
 class Video(models.Model):
@@ -21,8 +17,24 @@ class Video(models.Model):
     def __str__(self):
         return self.title
 
+class UserProfile(models.Model):
+    """用户资料类"""
+    belong_to = models.OneToOneField(to=User, related_name='profile')
+    profile_image = models.FileField(upload_to='profile_image')
 
+class Ticket(models.Model):
+    voter = models.ForeignKey(to=UserProfile, related_name='voter_tickets')
+    video = models.ForeignKey(to=Video, related_name='tickets')
 
+    VOTE_CHOICES = (
+        ('like','like'),
+        ('dislike', 'dislike'),
+        ('normal', 'normal'),
+        )
+    choice = models.CharField(choices=VOTE_CHOICES, max_length=10)
+
+    def __str__(self):
+        return str(self.id)
 # f = open('/Users/Administrator/Desktop/111.txt', 'r')
 # fake = Factory.create()
 #
